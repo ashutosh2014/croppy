@@ -22,72 +22,63 @@ class CupertinoImageCropperPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        systemNavigationBarColor: kCupertinoImageCropperBackgroundColor,
-        statusBarBrightness: Brightness.dark,
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        systemNavigationBarIconBrightness: Brightness.light,
-      ),
-      child: CroppableImagePageAnimator(
-        controller: controller,
-        heroTag: heroTag,
-        builder: (context, overlayOpacityAnimation) {
-          return CupertinoPageScaffold(
-            backgroundColor: kCupertinoImageCropperBackgroundColor,
-            navigationBar: CupertinoImageCropperAppBar(
-              controller: controller,
-            ),
-            child: SafeArea(
-              top: false,
-              bottom: true,
-              minimum: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: RepaintBoundary(
-                      child: AnimatedCroppableImageViewport(
+    return CroppableImagePageAnimator(
+      controller: controller,
+      heroTag: heroTag,
+      builder: (context, overlayOpacityAnimation) {
+        return CupertinoPageScaffold(
+          backgroundColor: Colors.red,
+          navigationBar: CupertinoImageCropperAppBar(
+            controller: controller,
+          ),
+          child: SafeArea(
+            top: false,
+            bottom: true,
+            // minimum: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: RepaintBoundary(
+                    child: AnimatedCroppableImageViewport(
+                      controller: controller,
+                      overlayOpacityAnimation: overlayOpacityAnimation,
+                      gesturePadding: gesturePadding,
+                      heroTag: heroTag,
+                      cropHandlesBuilder: (context) =>
+                          CupertinoImageCropHandles(
                         controller: controller,
-                        overlayOpacityAnimation: overlayOpacityAnimation,
                         gesturePadding: gesturePadding,
-                        heroTag: heroTag,
-                        cropHandlesBuilder: (context) =>
-                            CupertinoImageCropHandles(
-                          controller: controller,
-                          gesturePadding: gesturePadding,
-                        ),
                       ),
                     ),
                   ),
-                  RepaintBoundary(
-                    child: AnimatedBuilder(
-                      animation: overlayOpacityAnimation,
-                      builder: (context, _) => Opacity(
-                        opacity: overlayOpacityAnimation.value,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 96.0,
-                              child: CupertinoToolbar(
-                                controller: controller,
-                              ),
-                            ),
-                            CupertinoImageCropperBottomAppBar(
+                ),
+                RepaintBoundary(
+                  child: AnimatedBuilder(
+                    animation: overlayOpacityAnimation,
+                    builder: (context, _) => Opacity(
+                      opacity: overlayOpacityAnimation.value,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 96.0,
+                            child: CupertinoToolbar(
                               controller: controller,
-                              shouldPopAfterCrop: shouldPopAfterCrop,
                             ),
-                          ],
-                        ),
+                          ),
+                          CupertinoImageCropperBottomAppBar(
+                            controller: controller,
+                            shouldPopAfterCrop: shouldPopAfterCrop,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
