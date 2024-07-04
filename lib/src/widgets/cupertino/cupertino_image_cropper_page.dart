@@ -3,6 +3,8 @@ import 'package:croppy/src/widgets/cupertino/cupertino_image_cropper_app_bar.dar
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ide_theme/ide_theme.dart';
+import 'package:provider/provider.dart';
 
 const kCupertinoImageCropperBackgroundColor = Color(0xFF0A0A0A);
 
@@ -22,12 +24,13 @@ class CupertinoImageCropperPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var ide = Provider.of<IDEThemeNotifier>(context).isDarkMode;
     return CroppableImagePageAnimator(
       controller: controller,
       heroTag: heroTag,
       builder: (context, overlayOpacityAnimation) {
         return CupertinoPageScaffold(
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.transparent,
           navigationBar: CupertinoImageCropperAppBar(
             controller: controller,
           ),
@@ -37,17 +40,32 @@ class CupertinoImageCropperPage extends StatelessWidget {
             // minimum: const EdgeInsets.all(16.0),
             child: Column(
               children: [
+                const SizedBox(
+                  height: 16.0,
+                ),
                 Expanded(
                   child: RepaintBoundary(
-                    child: AnimatedCroppableImageViewport(
-                      controller: controller,
-                      overlayOpacityAnimation: overlayOpacityAnimation,
-                      gesturePadding: gesturePadding,
-                      heroTag: heroTag,
-                      cropHandlesBuilder: (context) =>
-                          CupertinoImageCropHandles(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ide
+                            ? const Color(0xFF393B40)
+                            : IDEThemeNotifier.of(context)
+                                .interTheme
+                                .primarySurface,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      // padding: const EdgeInsets.all(4),
+                      child: AnimatedCroppableImageViewport(
                         controller: controller,
+                        overlayOpacityAnimation: overlayOpacityAnimation,
                         gesturePadding: gesturePadding,
+                        heroTag: heroTag,
+                        cropHandlesBuilder: (context) =>
+                            CupertinoImageCropHandles(
+                          controller: controller,
+                          gesturePadding: gesturePadding,
+                        ),
                       ),
                     ),
                   ),
@@ -59,11 +77,8 @@ class CupertinoImageCropperPage extends StatelessWidget {
                       opacity: overlayOpacityAnimation.value,
                       child: Column(
                         children: [
-                          SizedBox(
-                            height: 96.0,
-                            child: CupertinoToolbar(
-                              controller: controller,
-                            ),
+                          CupertinoToolbar(
+                            controller: controller,
                           ),
                           CupertinoImageCropperBottomAppBar(
                             controller: controller,

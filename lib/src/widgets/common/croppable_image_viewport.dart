@@ -48,25 +48,29 @@ class CroppableImageViewport extends StatelessWidget {
       builder: (context, constraints) {
         final size = constraints.biggest + _sizeDelta;
         controller.setViewportSizeInBuild(size);
-
-        return Stack(
-          children: [
-            if (heroTag != null)
-              Center(
-                child: Hero(
-                  tag: heroTag!,
-                  flightShuttleBuilder: (flightContext, animation,
-                      flightDirection, fromHeroContext, toHeroContext) {
-                    return _buildHeroChild(context);
-                  },
-                  child: Visibility.maintain(
-                    visible: false,
-                    child: _buildHeroChild(context),
+        return SizedBox(
+          height: constraints.maxHeight,
+          width: constraints.maxWidth,
+          child: Stack(
+            children: [
+              if (heroTag != null)
+                Center(
+                  child: Hero(
+                    tag: heroTag!,
+                    flightShuttleBuilder: (flightContext, animation,
+                        flightDirection, fromHeroContext, toHeroContext) {
+                      print("Dasd,m,sdndsajn");
+                      return _buildHeroChild(context);
+                    },
+                    child: Visibility.maintain(
+                      visible: false,
+                      child: _buildHeroChild(context),
+                    ),
                   ),
                 ),
-              ),
-            Center(child: FittedBox(child: child)),
-          ],
+              Center(child: FittedBox(child: child)),
+            ],
+          ),
         );
       },
     );

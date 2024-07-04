@@ -1,5 +1,6 @@
 import 'package:croppy/src/src.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class CupertinoImageCropHandles extends StatelessWidget {
   const CupertinoImageCropHandles({
@@ -92,6 +93,14 @@ class _CupertinoImageRectCropHandlesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final rectPaint1 = Paint()
+      ..color = Colors.black45
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5;
+
+    // Draw the rectangle
+    canvas.drawRect(Offset.zero & size, rectPaint1);
+
     final rectPaint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke
@@ -105,7 +114,39 @@ class _CupertinoImageRectCropHandlesPainter extends CustomPainter {
       ..color = color
       ..strokeWidth = handleThickness
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 0.1);
+
+    final handlePaint1 = Paint()
+      ..color = Colors.black45
+      ..strokeWidth = 7
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round
+      ..maskFilter = MaskFilter.blur(BlurStyle.normal, 0.1);
+
+    canvas.drawLine(
+      Offset(0, size.height / 2 - 15.0),
+      Offset(0, size.height / 2 + 15.0),
+      handlePaint1,
+    );
+
+    canvas.drawLine(
+      Offset(size.width, size.height / 2 - 15.0),
+      Offset(size.width, size.height / 2 + 15.0),
+      handlePaint1,
+    );
+
+    canvas.drawLine(
+      Offset(size.width / 2 - 15.0, 0),
+      Offset(size.width / 2 + 15.0, 0),
+      handlePaint1,
+    );
+
+    canvas.drawLine(
+      Offset(size.width / 2 - 15.0, size.height),
+      Offset(size.width / 2 + 15.0, size.height),
+      handlePaint1,
+    );
 
     // Draw the edge handles
     canvas.drawLine(
@@ -131,6 +172,25 @@ class _CupertinoImageRectCropHandlesPainter extends CustomPainter {
       Offset(size.width / 2 + 15.0, size.height),
       handlePaint,
     );
+
+    final path1 = Path();
+    path1.moveTo(0, 15.0);
+    path1.lineTo(0, 0);
+    path1.lineTo(15.0, 0);
+
+    path1.moveTo(size.width, 15.0);
+    path1.lineTo(size.width, 0);
+    path1.lineTo(size.width - 15.0, 0);
+
+    path1.moveTo(0, size.height - 15.0);
+    path1.lineTo(0, size.height);
+    path1.lineTo(15.0, size.height);
+
+    path1.moveTo(size.width, size.height - 15.0);
+    path1.lineTo(size.width, size.height);
+    path1.lineTo(size.width - 15.0, size.height);
+
+    canvas.drawPath(path1, handlePaint1);
 
     // Draw the corner handles
     final path = Path();

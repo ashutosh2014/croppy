@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:croppy/src/src.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ide_theme/ide_theme.dart';
 
 class CupertinoImageTransformationToolbar extends StatefulWidget {
   const CupertinoImageTransformationToolbar({
@@ -107,8 +109,10 @@ class _CupertinoImageTransformationToolbarState
           isActive: _activeKnob == _Knob.rotateZ,
           onSelected: () => setState(() => _activeKnob = _Knob.rotateZ),
           onChanged: (v) => widget.controller.onStraighten(angleRad: v),
-          inactiveChild: const CupertinoStraightenIcon(
-            color: CupertinoColors.white,
+          inactiveChild: CupertinoStraightenIcon(
+            color: _activeKnob != _Knob.rotateZ
+                ? IDEThemeNotifier.of(context).textColor.neutral40
+                : IDEThemeNotifier.of(context).textColor.neutral100,
           ),
         ),
       if (widget.controller.isTransformationEnabled(Transformation.rotateX))
@@ -120,8 +124,10 @@ class _CupertinoImageTransformationToolbarState
           isActive: _activeKnob == _Knob.rotateX,
           onSelected: () => setState(() => _activeKnob = _Knob.rotateX),
           onChanged: (v) => widget.controller.onRotateX(angleRad: v),
-          inactiveChild: const CupertinoPerspectiveXIcon(
-            color: CupertinoColors.white,
+          inactiveChild: CupertinoPerspectiveXIcon(
+            color: _activeKnob != _Knob.rotateX
+                ? IDEThemeNotifier.of(context).textColor.neutral40
+                : IDEThemeNotifier.of(context).textColor.neutral100,
           ),
         ),
       if (widget.controller.isTransformationEnabled(Transformation.rotateY))
@@ -132,8 +138,10 @@ class _CupertinoImageTransformationToolbarState
           isActive: _activeKnob == _Knob.rotateY,
           onSelected: () => setState(() => _activeKnob = _Knob.rotateY),
           onChanged: (v) => widget.controller.onRotateY(angleRad: v),
-          inactiveChild: const CupertinoPerspectiveYIcon(
-            color: CupertinoColors.white,
+          inactiveChild: CupertinoPerspectiveYIcon(
+            color: _activeKnob != _Knob.rotateY
+                ? IDEThemeNotifier.of(context).textColor.neutral40
+                : IDEThemeNotifier.of(context).textColor.neutral100,
           ),
         ),
     ];
@@ -144,23 +152,75 @@ class _CupertinoImageTransformationToolbarState
     if (_activeKnob == null) {
       return const SizedBox.expand();
     }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        _CupertinoImageTransformationToolbarKnobs(
-          activeKnob: _activeKnob!,
-          knobs: _knobs,
-          children: _buildKnobs(context),
-        ),
-        const SizedBox(height: 8.0),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.easeInOut,
-          child: _buildRotationSlider(context),
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: IDEThemeNotifier.of(context).backgroundColor.color10,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      height: 146,
+      padding: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.only(bottom: 8, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.string(
+                '''<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1431_364)">
+<path d="M12.5411 9.92915H8.70277C8.84277 7.29165 7.70333 5.95832 6.84 5.33749L8.45389 3.41249C8.70666 3.11249 8.68333 2.65415 8.40333 2.38332C8.12333 2.11249 7.69166 2.13749 7.44277 2.43749L0.952219 10.1708C0.77333 10.3833 0.726664 10.6917 0.835552 10.9542C0.944441 11.2167 1.18944 11.3875 1.45777 11.3875H12.5411C12.9183 11.3875 13.2217 11.0625 13.2217 10.6583C13.2217 10.2542 12.9183 9.92915 12.5411 9.92915V9.92915ZM5.92611 6.42499C6.48222 6.76249 7.47778 7.68332 7.33778 9.92915H2.98611L5.92611 6.42499Z" fill="#6E6E73"/>
+</g>
+<defs>
+<clipPath id="clip0_1431_364">
+<rect width="12.4444" height="13.3333" fill="white" transform="translate(0.777344 0.333984)"/>
+</clipPath>
+</defs>
+</svg>
+''',
+                color: IDEThemeNotifier.of(context).textColor.neutral40,
+                height: 16,
+                width: 16,
+              ),
+              const SizedBox.square(
+                dimension: 4,
+              ),
+              Text(
+                'Rotation',
+                style: IDEThemeNotifier.of(context)
+                    .textStyles
+                    .labelMedium
+                    .copyWith(
+                        fontSize: 14,
+                        color:
+                            IDEThemeNotifier.of(context).textColor.neutral40),
+              )
+            ],
+          ),
+          const SizedBox.square(
+            dimension: 6,
+          ),
+          _CupertinoImageTransformationToolbarKnobs(
+            activeKnob: _activeKnob!,
+            knobs: _knobs,
+            children: _buildKnobs(context),
+          ),
+          const SizedBox(height: 8.0),
+          Container(
+            decoration: BoxDecoration(
+                color: IDEThemeNotifier.of(context).backgroundColor.color,
+                borderRadius: BorderRadius.circular(8.0)),
+            height: 58,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              switchInCurve: Curves.easeInOut,
+              switchOutCurve: Curves.easeInOut,
+              child: _buildRotationSlider(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -245,15 +305,10 @@ class _CupertinoImageTransformationToolbarKnobsState
       0.0,
     );
 
-    return Transform.translate(
-      offset: offset,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: widget.children
-            .map((v) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0), child: v))
-            .toList(),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisSize: MainAxisSize.max,
+      children: widget.children.map((v) => v).toList(),
     );
   }
 }
@@ -282,19 +337,25 @@ class _CupertinoRotationKnobWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: notifier,
-      builder: (context, v, _) => CupertinoKnob(
-        value: (isReversed ? -1 : 1) * v * 180 / pi,
-        extent: extent,
-        onChanged: (v) {
-          if (!isActive) {
-            onSelected();
-            return;
-          }
+      builder: (context, v, _) {
+        print(
+            "_CupertinoRotationKnobWidget>>> ${isActive} ${(isReversed ? -1 : 1) * v * 180 / pi}");
+        return CupertinoKnob(
+          isActive: isActive,
+          value: (isReversed ? -1 : 1) * v * 180 / pi,
+          extent: extent,
+          onChanged: (v) {
+            print("DSA>> $v $isActive");
+            if (!isActive) {
+              onSelected();
+              return;
+            }
 
-          onChanged(v);
-        },
-        inactiveChild: inactiveChild,
-      ),
+            onChanged(v);
+          },
+          inactiveChild: inactiveChild,
+        );
+      },
     );
   }
 }

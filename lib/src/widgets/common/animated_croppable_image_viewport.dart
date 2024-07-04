@@ -1,5 +1,7 @@
 import 'package:croppy/src/src.dart';
 import 'package:flutter/material.dart';
+import 'package:ide_theme/ide_theme.dart';
+import 'package:provider/provider.dart';
 
 class AnimatedCroppableImageViewport extends StatefulWidget {
   const AnimatedCroppableImageViewport({
@@ -88,16 +90,29 @@ class _AnimatedCroppableImageViewportState
 
   @override
   Widget build(BuildContext context) {
+    var ide = Provider.of<IDEThemeNotifier>(context).isDarkMode;
     return CroppableImageViewport(
       controller: widget.controller,
       gesturePadding: widget.gesturePadding,
       heroTag: widget.heroTag,
       heroChild: ListenableBuilder(
         listenable: widget.controller,
-        builder: (context, _) => CroppedHeroImageWidget(
-          controller: widget.controller,
-          child: Image(image: widget.controller.imageProvider),
-        ),
+        builder: (context, _) {
+          print("ASD>>> $_");
+          return Container(
+            decoration: BoxDecoration(
+              color: ide
+                  ? const Color(0xFF393B40)
+                  : IDEThemeNotifier.of(context).interTheme.primarySurface,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.hardEdge,
+            child: CroppedHeroImageWidget(
+              controller: widget.controller,
+              child: Image(image: widget.controller.imageProvider),
+            ),
+          );
+        },
       ),
       child: AnimatedBuilder(
         animation: _backgroundOpacityAnimation,

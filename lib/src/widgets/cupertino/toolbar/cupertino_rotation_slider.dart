@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:croppy/src/src.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ide_theme/ide_theme.dart';
 
 class CupertinoRotationSlider extends StatefulWidget {
   const CupertinoRotationSlider({
@@ -70,43 +71,68 @@ class _CupertinoRotationSliderState extends State<CupertinoRotationSlider> {
       value = -value;
     }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
-      onPanEnd: _onPanEnd,
-      child: ClipRect(
-        child: SizedBox(
-          height: 40.0,
-          child: Align(
-            alignment: Alignment.center,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                _width = constraints.maxWidth;
-                return SizedBox(
-                  width: _width,
-                  height: 12.0,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 100),
-                      curve: Curves.easeInOut,
-                      opacity: value.abs() > epsilon ? 1.0 : 0.5,
-                      child: CustomPaint(
-                        painter: _CupertinoSliderPainter(
-                          primaryColor: CupertinoTheme.of(context).primaryColor,
-                          value: value,
-                          isDragging: _dragStartDetails != null,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onPanStart: _onPanStart,
+          onPanUpdate: _onPanUpdate,
+          onPanEnd: _onPanEnd,
+          child: ClipRect(
+            child: SizedBox(
+              height: 28.0,
+              child: Align(
+                alignment: Alignment.center,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    _width = constraints.maxWidth;
+                    return SizedBox(
+                      width: _width,
+                      height: 16.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: AnimatedOpacity(
+                          duration: const Duration(milliseconds: 100),
+                          curve: Curves.easeInOut,
+                          opacity: value.abs() > epsilon ? 1.0 : 0.5,
+                          child: CustomPaint(
+                            painter: _CupertinoSliderPainter(
+                              primaryColor: IDEThemeNotifier.of(context)
+                                  .textColor
+                                  .neutral20,
+                              primaryColor2: IDEThemeNotifier.of(context)
+                                  .textColor
+                                  .neutral30,
+                              primaryColor3: IDEThemeNotifier.of(context)
+                                  .textColor
+                                  .neutral40,
+                              primaryColorMain: IDEThemeNotifier.of(context)
+                                  .textColor
+                                  .neutral10,
+                              value: value,
+                              isDragging: _dragStartDetails != null,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ),
             ),
           ),
         ),
-      ),
+        const SizedBox.square(
+          dimension: 6,
+        ),
+        Text(
+          (value * 45).toStringAsFixed(2),
+          style: IDEThemeNotifier.of(context).textStyles.labelMedium.copyWith(
+              color: IDEThemeNotifier.of(context).textColor.neutral40),
+        )
+      ],
     );
   }
 }
@@ -114,28 +140,31 @@ class _CupertinoRotationSliderState extends State<CupertinoRotationSlider> {
 class _CupertinoSliderPainter extends CustomPainter {
   _CupertinoSliderPainter({
     required this.primaryColor,
+    required this.primaryColor2,
+    required this.primaryColor3,
+    required this.primaryColorMain,
     required this.value,
     this.isDragging = false,
   });
 
-  final Color primaryColor;
+  final Color primaryColor, primaryColor2, primaryColor3, primaryColorMain;
   final double value;
   final bool isDragging;
 
   @override
   void paint(Canvas canvas, Size size) {
     final dividerPaint = Paint()
-      ..color = CupertinoColors.white.withOpacity(0.75)
+      ..color = primaryColor2
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.0;
 
     final highlightedDividerPaint = Paint()
-      ..color = CupertinoColors.white
+      ..color = primaryColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.0;
 
     final outOfBoundsDividerPaint = Paint()
-      ..color = CupertinoColors.white.withOpacity(0.25)
+      ..color = primaryColor3
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.0;
 
@@ -168,14 +197,14 @@ class _CupertinoSliderPainter extends CustomPainter {
       );
     }
 
-    canvas.drawCircle(
-      Offset(center.dx, -8.0),
-      3.0,
-      Paint()..color = CupertinoColors.white,
-    );
+    // canvas.drawCircle(
+    //   Offset(center.dx, -8.0),
+    //   3.0,
+    //   Paint()..color = primaryColor,
+    // );
 
     final tickerPaint = Paint()
-      ..color = isDragging ? primaryColor : CupertinoColors.white
+      ..color = isDragging ? primaryColor : primaryColorMain
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 
