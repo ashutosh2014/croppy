@@ -98,7 +98,6 @@ class _AnimatedCroppableImageViewportState
       heroChild: ListenableBuilder(
         listenable: widget.controller,
         builder: (context, _) {
-          print("ASD>>> $_");
           return Container(
             decoration: BoxDecoration(
               color: ide

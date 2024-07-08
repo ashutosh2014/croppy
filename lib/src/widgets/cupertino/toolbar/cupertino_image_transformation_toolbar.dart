@@ -338,14 +338,11 @@ class _CupertinoRotationKnobWidget extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: notifier,
       builder: (context, v, _) {
-        print(
-            "_CupertinoRotationKnobWidget>>> ${isActive} ${(isReversed ? -1 : 1) * v * 180 / pi}");
         return CupertinoKnob(
           isActive: isActive,
           value: (isReversed ? -1 : 1) * v * 180 / pi,
           extent: extent,
           onChanged: (v) {
-            print("DSA>> $v $isActive");
             if (!isActive) {
               onSelected();
               return;

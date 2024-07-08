@@ -24,10 +24,6 @@ class CupertinoKnobButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("Da>> ${isActive}");
-    final color = isPositive
-        ? CupertinoTheme.of(context).primaryColor
-        : CupertinoColors.white;
     var ide = Provider.of<IDEThemeNotifier>(context).isDarkMode;
     return SizedBox(
       height: 36,
@@ -47,8 +43,6 @@ class CupertinoKnobButton extends StatelessWidget {
           overlayColor: const MaterialStatePropertyAll(Colors.transparent),
         ),
         onPressed: onPressed,
-        // padding: EdgeInsets.zero,
-        // minSize: 48.0,
         child: AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeInOut,
@@ -59,14 +53,6 @@ class CupertinoKnobButton extends StatelessWidget {
               width: 48.0,
               height: 48.0,
               alignment: Alignment.center,
-              // decoration: BoxDecoration(
-              //   shape: BoxShape.circle,
-              //   color: Colors.black54,
-              //   border: Border.all(
-              //     width: 2.0,
-              //     color: color.withOpacity(0.35),
-              //   ),
-              // ),
               child: child,
             ),
           ),
